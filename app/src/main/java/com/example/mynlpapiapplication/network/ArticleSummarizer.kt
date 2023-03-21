@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 /**
- * Still not working
+ * Retrofit version still not working.  Separate classes when working.
  */
 class ArticleSummarizer() {
     val baseUrl1 = "https://api.openai.com/v1/"
