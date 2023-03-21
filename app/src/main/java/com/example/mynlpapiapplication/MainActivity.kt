@@ -9,19 +9,22 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.example.mynlpapiapplication.databinding.ActivityMainBinding
+import com.example.mynlpapiapplication.network.ArticleSummarizer
 import com.example.mynlpapiapplication.network.OpenAISummarizer
 import com.example.mynlpapiapplication.network.SummarizeBot
 import com.example.mynlpapiapplication.network.SummarizeBotClient
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private var summarySize : Int = 10
+    private var summarySize : Int = 50
     private val binding : ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(LayoutInflater.from(this))
     }
     private val summarizeBotClient = SummarizeBotClient()
     private val summarizeBot = SummarizeBot("XXXXX")
     private val openAISummarizer = OpenAISummarizer()
-    val loadSize = arrayOf<String>("10", "20", "30", "40", "50", "60", "70")
+    val loadSize = arrayOf<String>("50", "100", "200")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -38,8 +41,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.summarizeButton.setOnClickListener {
             if (!binding.url.text.isNullOrEmpty()) {
-                openAISummarizer.summarizeUrl(binding.url.text.toString(),200) {
-                    binding.summaryText.text = it.toString()
+                GlobalScope.launch {
+                    binding.summaryText.text = ArticleSummarizer().summarizeArticle(binding.url.text.toString(), summarySize)
                 }
             }
         }

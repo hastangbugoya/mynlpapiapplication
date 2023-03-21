@@ -19,8 +19,8 @@ class OpenAISummarizer() {
         var content = ""
         val job = CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
-                content = fetchUrlContent(url)
-                summary = summarizeText(content, maxLength)
+//                content = fetchUrlContent(url)
+                summary = summarizeText(url, maxLength)
             }
             callback(summary)
         }
@@ -33,6 +33,7 @@ class OpenAISummarizer() {
         var response = CoroutineScope(Dispatchers.IO).async {
                 client.newCall(request).execute()
         }.await()
+        Log.d ("Meow","URL DATA >>>>>>>>>>>>>>>>>" + response.body?.string() ?: "")
         return response.body?.string() ?: ""
     }
 
@@ -42,7 +43,7 @@ class OpenAISummarizer() {
             .put("prompt", "Please summarize the following text:")
             .put("temperature", 0.5)
             .put("max_tokens", maxLength)
-            .put("text", text)
+            .put("url", text)
             .toString()
             .toRequestBody("application/json".toMediaType())
 
