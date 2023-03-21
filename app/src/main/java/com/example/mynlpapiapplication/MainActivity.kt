@@ -8,13 +8,11 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.example.mynlpapiapplication.databinding.ActivityMainBinding
 import com.example.mynlpapiapplication.network.OpenAISummarizer
-import com.example.mynlpapiapplication.network.SummarizeBot
-import com.example.mynlpapiapplication.network.SummarizeBotClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     private var maxTokens: Int = 50
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -24,10 +22,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        binding.summarySize.adapter = ArrayAdapter(
+        openAISummarizer.setUIUpdater(this)
+        binding.maxTokensSpinner.adapter = ArrayAdapter(
             this,
-            com.example.mynlpapiapplication.R.layout.shrink_spinner_item,
+            R.layout.shrink_spinner_item,
             loadSize
         )
             .apply {
@@ -46,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.summarySize.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.maxTokensSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View?,
@@ -54,13 +52,21 @@ class MainActivity : AppCompatActivity() {
                 id: Long
             ) {
                 // May or may not affect return length - just setting maximum
-                // May be affected when we set temperature
+                // return length may be affected when we set temperature
                 maxTokens = Integer.parseInt(parent.getItemAtPosition(position).toString())
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-
+                TODO("Something")
             }
         }
+    }
+
+    override fun lockupButton() {
+       binding.summarizeButton.isClickable = false
+    }
+
+    override fun releaseButton() {
+        binding.summarizeButton.isClickable = true
     }
 }

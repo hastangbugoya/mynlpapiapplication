@@ -10,34 +10,45 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
-class OpenAISummarizer() {
+class OpenAISummarizer(
+    val apiKey : String = BuildConfig.API_KEY,
+    val baseUrl : String = BuildConfig.BASE_URL
+) {
     private val client = OkHttpClient()
-    private val apiKey = BuildConfig.API_KEY
 
-    suspend fun summarizeUrl(url: String, maxLength: Int) : OpenAISummarizerResponse {
+    var uiUpdater : UIUpdater? = null
+
+    suspend fun summarizeUrl(urlString: String, maxTokens: Int): OpenAISummarizerResponse {
         return withContext(Dispatchers.IO) {
-            summarizeText(url, maxLength)
+            uiUpdater?.lockupButton()
+            val requestBody = JSONObject()
+                .put("model", "text-davinci-002")
+                .put("prompt", "Give me the summary of the content of this webpage: $urlString")
+                .put("temperature", 0.5) // creative freedom on a scale 0.1 to 1.0(Max)
+                .put("max_tokens", maxTokens)
+                .toString()
+                .toRequestBody("application/json".toMediaType())
+
+            val request = Request.Builder()
+                .url("${baseUrl}completions")
+                .header("Authorization", "Bearer $apiKey")
+                .post(requestBody)
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: ""
+            val gson = Gson()
+            uiUpdater?.releaseButton()
+            gson.fromJson(responseBody, OpenAISummarizerResponse::class.java)
         }
     }
 
-    private fun summarizeText(text: String, maxTokens: Int): OpenAISummarizerResponse {
-        val requestBody = JSONObject()
-            .put("model", "text-davinci-002")
-            .put("prompt", "Give me the summary of the content of this webpage: $text")
-            .put("temperature", 0.5)
-            .put("max_tokens", maxTokens)
-            .toString()
-            .toRequestBody("application/json".toMediaType())
+    fun setUIUpdater(updater : UIUpdater) {
+        uiUpdater = updater
+    }
 
-        val request = Request.Builder()
-            .url("https://api.openai.com/v1/completions")
-            .header("Authorization", "Bearer $apiKey")
-            .post(requestBody)
-            .build()
-
-        val response = client.newCall(request).execute()
-        val responseBody = response.body?.string() ?: ""
-        val gson = Gson()
-        return gson.fromJson(responseBody, OpenAISummarizerResponse::class.java)
+    interface UIUpdater {
+        fun lockupButton()
+        fun releaseButton()
     }
 }

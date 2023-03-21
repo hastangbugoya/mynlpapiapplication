@@ -2,7 +2,6 @@ package com.example.mynlpapiapplication.network
 
 import com.example.mynlpapiapplication.data.SummarizeResponse
 import kotlinx.coroutines.*
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -22,22 +21,20 @@ class SummarizeBot(private val apiKey: String) {
 
     private val service = retrofit.create(SummarizeBotService::class.java)
 
-    fun summarize(text: String): String {
+    suspend fun summarize(text: String): String {
         val requestBody = "{\"url\":\"$text\",\"size\":20}"
-        var S = ""
+        var s = ""
 //        val call = service.summarize(apiKey, requestBody)
         try {
-            CoroutineScope(Dispatchers.Main).launch() {
-                S = withTimeoutOrNull(4000L) {
+                s = withTimeoutOrNull(4000L) {
                     withContext(Dispatchers.IO) {
                         service.summarize(apiKey, requestBody).summary
                     }
                 } ?: "Timed out"
-            }
         } catch (e: Exception) {
-            S = e.toString()
+            s = e.toString()
         }
-        return S
+        return s
     }
 
     private interface SummarizeBotService {
