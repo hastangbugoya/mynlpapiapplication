@@ -53,12 +53,13 @@ class MainActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
+                // May or may not affect return length - just setting maximum
+                // May be affected when we set temperature
                 maxTokens = Integer.parseInt(parent.getItemAtPosition(position).toString())
-                // do something with the selected item
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // do nothing
+
             }
         }
     }

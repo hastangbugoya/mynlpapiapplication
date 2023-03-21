@@ -9,6 +9,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
+/**
+ * Still not working
+ */
 class ArticleSummarizer() {
     val baseUrl1 = "https://api.openai.com/v1/"
     private val apiKey = BuildConfig.API_KEY

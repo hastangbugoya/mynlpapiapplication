@@ -8,7 +8,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-
+/**
+ *  Waiting for SummarizeBot API key
+ */
 class SummarizeBotClient() {
     private val retrofit : Retrofit by lazy {
         Retrofit.Builder()
