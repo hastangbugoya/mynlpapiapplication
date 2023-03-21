@@ -1,5 +1,6 @@
 package com.example.mynlpapiapplication.network
 
+import android.util.Log
 import com.example.mynlpapiapplication.BuildConfig
 import com.example.mynlpapiapplication.data.OpenAISummarizerResponse
 import com.google.gson.Gson
@@ -37,6 +38,7 @@ class OpenAISummarizer(
 
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string() ?: ""
+            Log.d("Meow", responseBody)
             val gson = Gson()
             uiUpdater?.releaseButton()
             gson.fromJson(responseBody, OpenAISummarizerResponse::class.java)

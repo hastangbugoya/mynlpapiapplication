@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
                         openAISummarizer.summarizeUrl(binding.url.text.toString(), maxTokens)
-                    binding.summaryText.text = result.choices?.get(0)?.text ?: result.error ?: ""
+                    binding.summaryText.text = result.choices?.get(0)?.text ?: result.error?.toString() ?: ""
                 }
             }
         }

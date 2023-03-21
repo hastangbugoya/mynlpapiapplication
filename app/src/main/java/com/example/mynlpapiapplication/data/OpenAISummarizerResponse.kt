@@ -6,7 +6,7 @@ data class OpenAISummarizerResponse(
     @SerializedName("choices")
     val choices: List<Choice>?,
     @SerializedName("error")
-    val error : String? = ""
+    val error: Error?
 ) {
     data class Choice(
         @SerializedName("text")
@@ -15,5 +15,16 @@ data class OpenAISummarizerResponse(
         val finishReason: String,
         @SerializedName("index")
         val index: Int
+    )
+
+    data class Error(
+        @SerializedName("message")
+        val message: String?,
+        @SerializedName("type")
+        val type: String?,
+        @SerializedName("param")
+        val param: String?,
+        @SerializedName("code")
+        val code: String?
     )
 }
