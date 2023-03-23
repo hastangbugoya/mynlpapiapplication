@@ -86,6 +86,11 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                         )
                     binding.summaryText.text =
                         result.choices?.get(0)?.text ?: result.error?.toString() ?: "Unknown error"
+                    result.usage?.let {
+                        binding.promtTokens.text = it.prompt_tokens.toString()
+                        binding.completionTokens.text = it.completion_tokens.toString()
+                        binding.totalTokens.text = it.total_tokens.toString()
+                    }
                     if (result.code.equals(401)) {
                         myAPIKey.resetKey()
                         myAPIKey.saveAPIInfo()

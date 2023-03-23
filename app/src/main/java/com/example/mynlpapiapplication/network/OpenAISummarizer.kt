@@ -37,7 +37,7 @@ class OpenAISummarizer(
 
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string() ?: ""
-            Log.d("Meow", response.code.toString())
+            Log.d("Meow", responseBody)
             val gson = Gson()
             uiUpdater?.releaseButton()
             gson.fromJson(responseBody, OpenAISummarizerResponse::class.java).apply {

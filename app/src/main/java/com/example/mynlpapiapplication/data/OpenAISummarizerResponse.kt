@@ -7,6 +7,8 @@ data class OpenAISummarizerResponse(
     val choices: List<Choice>?,
     @SerializedName("error")
     val error: Error?,
+    @SerializedName("usage")
+    val usage : Usage?,
     var code : Int,
     var success : Boolean
 ) {
@@ -28,5 +30,13 @@ data class OpenAISummarizerResponse(
         val param: String?,
         @SerializedName("code")
         val code: String?
+    )
+    data class Usage(
+        @SerializedName("prompt_tokens")
+        val prompt_tokens : Int = 0,
+        @SerializedName("completion_tokens")
+        val completion_tokens : Int = 0,
+        @SerializedName("total_tokens")
+        val total_tokens : Int = 0
     )
 }
