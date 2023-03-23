@@ -19,8 +19,8 @@ class OpenAISummarizer(
 
     var uiUpdater : UIUpdater? = null
 
-    suspend fun summarizeUrl(urlString: String, maxTokens: Int, temperature : Double): OpenAISummarizerResponse {
-        return withContext(Dispatchers.IO) {
+    suspend fun summarizeUrl(urlString: String, maxTokens: Int, temperature : Double, runOn: CoroutineDispatcher): OpenAISummarizerResponse {
+        return withContext(runOn) {
             uiUpdater?.lockupButton()
             val requestBody = JSONObject()
                 .put("model", "text-davinci-002")

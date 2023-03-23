@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
             if (!binding.url.text.isNullOrEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        openAISummarizer.summarizeUrl(binding.url.text.toString(), maxTokens, temperature)
+                        openAISummarizer.summarizeUrl(binding.url.text.toString(), maxTokens, temperature, Dispatchers.IO)
                     binding.summaryText.text = result.choices?.get(0)?.text ?: result.error?.toString() ?: ""
                 }
             }
