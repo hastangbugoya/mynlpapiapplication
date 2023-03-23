@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
             }
             if (!myAPIKey.isNullorEmpty() && !binding.url.text.isNullOrEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
+                    binding.loadingImage.visibility = View.VISIBLE
                     val result =
                         openAISummarizer.summarizeUrl(
                             myAPIKey.getAPIKey()!!,
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                             temperature,
                             Dispatchers.IO
                         )
+                    binding.loadingImage.visibility = View.GONE
                     binding.summaryText.text =
                         result.choices?.get(0)?.text ?: result.error?.toString() ?: "Unknown error"
                     result.usage?.let {

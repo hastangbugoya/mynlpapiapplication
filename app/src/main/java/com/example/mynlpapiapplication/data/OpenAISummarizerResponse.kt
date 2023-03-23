@@ -9,7 +9,7 @@ data class OpenAISummarizerResponse(
     val error: Error?,
     @SerializedName("usage")
     val usage : Usage?,
-    var code : Int,
+    var code : Int = 0,
     var success : Boolean
 ) {
     data class Choice(
