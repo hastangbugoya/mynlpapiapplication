@@ -14,8 +14,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:textAlignment="textStart"
         android:textColor="@color/black"
+        android:textColorHint="@color/url_hint"
         android:background="@drawable/url_background"
-        android:padding="8dp"
+        android:padding="12dp"
         android:layout_margin="4dp"
         android:hint="Enter URL here" />
     <Spinner
@@ -27,8 +28,9 @@
         app:layout_constraintRight_toLeftOf="@id/temperature_spinner"
         app:layout_constraintBottom_toBottomOf="@id/summarize_button"
         android:background="@drawable/url_background"
+        tools:listitem="@layout/shrink_spinner_item"
         android:layout_margin="4dp"
-        android:padding="4dp"
+        android:padding="8dp"
         tools:text="99%"
         android:textAlignment="textStart"/>
     <Spinner
@@ -40,8 +42,9 @@
         app:layout_constraintRight_toLeftOf="@id/summarize_button"
         app:layout_constraintBottom_toBottomOf="@id/summarize_button"
         android:background="@drawable/url_background"
+        tools:listitem="@layout/shrink_spinner_item"
         android:layout_margin="4dp"
-        android:padding="4dp"
+        android:padding="8dp"
         tools:text="99%"
         android:textAlignment="textStart"/>
     <Button
@@ -49,8 +52,10 @@
         android:layout_width="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/url"
         app:layout_constraintRight_toRightOf="parent"
+        android:backgroundTint="@color/button_bgcolor"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
+        android:padding="12dp"
         android:text="Summarize" />
     <TextView
         android:id="@+id/max_tokens_label"
