@@ -2,6 +2,7 @@ package com.example.mynlpapiapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,9 +33,9 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     }
 
     private val openAISummarizer = OpenAISummarizer()
-    val loadSize = arrayOf<String>("50", "100", "200")
+    private val loadSize = arrayOf<String>("50", "100", "150", "200")
 
-    val temperatureArray = Array<String>(10) {
+    private val temperatureArray = Array<String>(10) {
         "%.1f".format((it + 1) / 10.0)
     }
 
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         }
         setContentView(binding.root)
         openAISummarizer.setUIUpdater(this)
+
         binding.maxTokensSpinner.adapter = ArrayAdapter(
             this,
             R.layout.shrink_spinner_item,
@@ -88,13 +90,14 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                         )
                     binding.loadingImage.visibility = View.GONE
                     binding.summaryText.text =
-                        result.choices?.get(0)?.text ?: result.error?.toString() ?: getString(R.string.unknown_error)
+                        result.choices?.get(0)?.text ?: result.error?.toString()
+                                ?: getString(R.string.unknown_error)
                     result.usage?.let {
                         binding.promtTokens.text = it.prompt_tokens.toString()
                         binding.completionTokens.text = it.completion_tokens.toString()
                         binding.totalTokens.text = it.total_tokens.toString()
                     }
-                    if (result.code.equals(401)) {
+                    if (result.code == 401) {
                         myAPIKey.resetKey()
                         myAPIKey.saveAPIInfo()
                         Log.d(
@@ -141,21 +144,43 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                     TODO("Something")
                 }
             }
-
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+
+        outState.putString("url",binding.url.text.toString())
+        outState.putString("prompt_token",binding.promptTokensLabel.text.toString())
+        outState.putString("completion_tokens",binding.completionTokens.text.toString())
+        outState.putString("total_tokens",binding.totalTokens.text.toString())
+        outState.putString("summary",binding.summaryText.text.toString())
+        outState.putInt("max_tokens", maxTokens)
+        outState.putDouble("temperature", temperature)
+        super.onSaveInstanceState(outState, outPersistentState)
     }
 
-    fun askForAPIKey() {
+    override fun onRestoreInstanceState(
+        savedInstanceState: Bundle?,
+        persistentState: PersistableBundle?
+    ) {
+        binding.url.setText(savedInstanceState?.getString("url"))
+        binding.promtTokens.setText(savedInstanceState?.getString("prompt_tokens"))
+        binding.completionTokens.setText(savedInstanceState?.getString("completion_tokens"))
+        binding.totalTokens.setText(savedInstanceState?.getString("summary"))
+        maxTokens = savedInstanceState?.getInt("max_tokens") ?: 50
+        binding.maxTokensSpinner.setSelection((maxTokens/50) - 1)
+        temperature = savedInstanceState?.getDouble("temperature") ?: 0.5
+        binding.temperatureSpinner.setSelection((temperature * 10).toInt() - 1)
+        super.onRestoreInstanceState(savedInstanceState, persistentState)
+    }
+
+    private fun askForAPIKey() {
         val editText = EditText(this)
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.enter_apikey_prompt))
             .setView(editText)
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 val inputString = editText.text.toString()
-                if (!inputString.isNullOrEmpty()) {
+                if (inputString.isNotEmpty()) {
                     myAPIKey.setAPIKey(inputString)
                     myAPIKey.saveAPIInfo()
                 }

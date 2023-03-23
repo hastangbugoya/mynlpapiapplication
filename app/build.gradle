@@ -15,15 +15,17 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "BASE_URL", "\"https://api.openai.com/v1/\""
     }
 
     buildTypes {
         debug {
             buildConfigField "String", "API_KEY", "\"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\""
-            buildConfigField "String", "BASE_URL", "\"https://api.openai.com/v1/\""
         }
         release {
             minifyEnabled false
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
