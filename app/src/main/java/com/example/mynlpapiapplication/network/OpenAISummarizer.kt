@@ -19,13 +19,13 @@ class OpenAISummarizer(
 
     var uiUpdater : UIUpdater? = null
 
-    suspend fun summarizeUrl(urlString: String, maxTokens: Int): OpenAISummarizerResponse {
+    suspend fun summarizeUrl(urlString: String, maxTokens: Int, temperature : Double): OpenAISummarizerResponse {
         return withContext(Dispatchers.IO) {
             uiUpdater?.lockupButton()
             val requestBody = JSONObject()
                 .put("model", "text-davinci-002")
                 .put("prompt", "Give me the summary of the content of this webpage: $urlString")
-                .put("temperature", 0.5) // creative freedom on a scale 0.1 to 1.0(Max)
+                .put("temperature", temperature) // creative freedom on a scale 0.1 to 1.0(Max)
                 .put("max_tokens", maxTokens)
                 .toString()
                 .toRequestBody("application/json".toMediaType())

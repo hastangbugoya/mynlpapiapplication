@@ -14,11 +14,15 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     private var maxTokens: Int = 50
+    private var temperature : Double = 0.5
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(LayoutInflater.from(this))
     }
     private val openAISummarizer = OpenAISummarizer()
     val loadSize = arrayOf<String>("50", "100", "200")
+    val temperatureArray = Array<String>(10){
+        "%.1f".format((it + 1)/ 10.0)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -34,11 +38,23 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                 )
             }
 
+        binding.temperatureSpinner.adapter = ArrayAdapter(
+            this,
+            R.layout.shrink_spinner_item,
+            temperatureArray
+        )
+            .apply {
+                setDropDownViewResource(
+                    android.R.layout.simple_spinner_dropdown_item
+                )
+            }
+        binding.temperatureSpinner.setSelection(4)
+
         binding.summarizeButton.setOnClickListener {
             if (!binding.url.text.isNullOrEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
                     val result =
-                        openAISummarizer.summarizeUrl(binding.url.text.toString(), maxTokens)
+                        openAISummarizer.summarizeUrl(binding.url.text.toString(), maxTokens, temperature)
                     binding.summaryText.text = result.choices?.get(0)?.text ?: result.error?.toString() ?: ""
                 }
             }
@@ -60,6 +76,23 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                 TODO("Something")
             }
         }
+        binding.temperatureSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                // May or may not affect return length - just setting AI creative freedom
+                // higher value gives more leeway
+                temperature = parent.getItemAtPosition(position).toString().toDouble()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                TODO("Something")
+            }
+        }
+
     }
 
     override fun lockupButton() {
