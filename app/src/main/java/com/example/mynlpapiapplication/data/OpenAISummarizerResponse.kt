@@ -6,7 +6,9 @@ data class OpenAISummarizerResponse(
     @SerializedName("choices")
     val choices: List<Choice>?,
     @SerializedName("error")
-    val error: Error?
+    val error: Error?,
+    var code : Int,
+    var success : Boolean
 ) {
     data class Choice(
         @SerializedName("text")

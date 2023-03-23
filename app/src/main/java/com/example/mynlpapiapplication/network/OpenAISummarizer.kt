@@ -12,14 +12,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 class OpenAISummarizer(
-    val apiKey : String = BuildConfig.API_KEY,
     val baseUrl : String = BuildConfig.BASE_URL
 ) {
     private val client = OkHttpClient()
 
     var uiUpdater : UIUpdater? = null
 
-    suspend fun summarizeUrl(urlString: String, maxTokens: Int, temperature : Double, runOn: CoroutineDispatcher): OpenAISummarizerResponse {
+    suspend fun summarizeUrl(apiKey: String, urlString: String, maxTokens: Int, temperature : Double, runOn: CoroutineDispatcher): OpenAISummarizerResponse {
         return withContext(runOn) {
             uiUpdater?.lockupButton()
             val requestBody = JSONObject()
@@ -38,10 +37,13 @@ class OpenAISummarizer(
 
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string() ?: ""
-            Log.d("Meow", responseBody)
+            Log.d("Meow", response.code.toString())
             val gson = Gson()
             uiUpdater?.releaseButton()
-            gson.fromJson(responseBody, OpenAISummarizerResponse::class.java)
+            gson.fromJson(responseBody, OpenAISummarizerResponse::class.java).apply {
+                code = response.code
+                success = response.isSuccessful
+            }
         }
     }
 
