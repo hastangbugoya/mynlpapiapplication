@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                     binding.loadingImage.visibility = View.VISIBLE
                     val result =
                         openAISummarizer.summarizeUrl(
+                            this@MainActivity,
                             myAPIKey.getAPIKey()!!,
                             binding.url.text.toString(),
                             maxTokens,
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                         )
                     binding.loadingImage.visibility = View.GONE
                     binding.summaryText.text =
-                        result.choices?.get(0)?.text ?: result.error?.toString() ?: "Unknown error"
+                        result.choices?.get(0)?.text ?: result.error?.toString() ?: getString(R.string.unknown_error)
                     result.usage?.let {
                         binding.promtTokens.text = it.prompt_tokens.toString()
                         binding.completionTokens.text = it.completion_tokens.toString()
@@ -150,16 +151,16 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     fun askForAPIKey() {
         val editText = EditText(this)
         AlertDialog.Builder(this)
-            .setTitle("Enter your OpenAI API key")
+            .setTitle(getString(R.string.enter_apikey_prompt))
             .setView(editText)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 val inputString = editText.text.toString()
                 if (!inputString.isNullOrEmpty()) {
                     myAPIKey.setAPIKey(inputString)
                     myAPIKey.saveAPIInfo()
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .create().show()
     }
 

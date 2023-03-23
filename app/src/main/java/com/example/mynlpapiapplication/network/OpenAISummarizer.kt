@@ -1,7 +1,9 @@
 package com.example.mynlpapiapplication.network
 
+import android.content.Context
 import android.util.Log
 import com.example.mynlpapiapplication.BuildConfig
+import com.example.mynlpapiapplication.R
 import com.example.mynlpapiapplication.data.OpenAISummarizerResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.*
@@ -15,15 +17,20 @@ class OpenAISummarizer(
     val baseUrl : String = BuildConfig.BASE_URL
 ) {
     private val client = OkHttpClient()
-
     var uiUpdater : UIUpdater? = null
-
-    suspend fun summarizeUrl(apiKey: String, urlString: String, maxTokens: Int, temperature : Double, runOn: CoroutineDispatcher): OpenAISummarizerResponse {
+    suspend fun summarizeUrl(
+        context: Context,
+        apiKey: String,
+        urlString: String,
+        maxTokens: Int,
+        temperature : Double,
+        runOn: CoroutineDispatcher
+    ): OpenAISummarizerResponse {
         return withContext(runOn) {
             uiUpdater?.lockupButton()
             val requestBody = JSONObject()
                 .put("model", "text-davinci-002")
-                .put("prompt", "Give me the summary of the content of this webpage: $urlString")
+                .put("prompt", context.resources.getString(R.string.url_prompt).format(urlString))
                 .put("temperature", temperature) // creative freedom on a scale 0.1 to 1.0(Max)
                 .put("max_tokens", maxTokens)
                 .toString()

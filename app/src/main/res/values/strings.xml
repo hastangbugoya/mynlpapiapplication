@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">MyNLPAPIApplication</string>
+    <string name="app_name" translatable="false">MyNLPAPIApplication</string>
+    <string name="url_prompt">Give me the summary of the content of this webpage: %1$s</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="enter_apikey_prompt">Enter your OpenAI API key</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>
