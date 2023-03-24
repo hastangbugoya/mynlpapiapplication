@@ -1,21 +1,23 @@
 package com.example.mynlpapiapplication
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.example.mynlpapiapplication.core.APIKey
 import com.example.mynlpapiapplication.core.MySharedPreference
+import com.example.mynlpapiapplication.data.AlertType
 import com.example.mynlpapiapplication.data.OpenAISummarizerResponse
 import com.example.mynlpapiapplication.databinding.ActivityMainBinding
 import com.example.mynlpapiapplication.network.OpenAISummarizer
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +25,10 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     private var maxTokens: Int = 50
     private var temperature: Double = 0.5
+
+    private val inputMethodManager: InputMethodManager by lazy {
+        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    }
 
     private val myAPIKey: APIKey by lazy {
         APIKey(mySharedPreference)
@@ -49,6 +55,8 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
             myAPIKey.setAPIKey(BuildConfig.API_KEY)
             myAPIKey.saveAPIInfo()
         }
+        maxTokens = mySharedPreference.getMaxTokens()
+        temperature = mySharedPreference.getTemperature()
         setContentView(binding.root)
         openAISummarizer.setUIUpdater(this)
 
@@ -80,9 +88,8 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                 askForAPIKey()
             }
             if (!myAPIKey.isNullorEmpty() && !binding.url.text.isNullOrEmpty()) {
-                binding.loadingImage.visibility = View.VISIBLE
                 CoroutineScope(Dispatchers.Main).launch {
-
+                    binding.loadingImage.visibility = View.VISIBLE
                     val result = try {
                         openAISummarizer.summarizeUrl(
                             this@MainActivity,
@@ -93,7 +100,11 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                             Dispatchers.IO
                         )
                     } catch (e: Exception) {
-                        Toast.makeText(this@MainActivity,"something went wrong",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "something went wrong",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         OpenAISummarizerResponse()
                     }
                     binding.loadingImage.visibility = View.GONE
@@ -105,9 +116,14 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                         binding.completionTokens.text = it.completion_tokens.toString()
                         binding.totalTokens.text = it.total_tokens.toString()
                     }
+                    showAlert(
+                        "Turnaround time: ${result.responseTime - result.sendTime}ms",
+                        AlertType.DEFAULT
+                    )
                     if (result.code == 401) {
                         myAPIKey.resetKey()
                         myAPIKey.saveAPIInfo()
+                        showAlert("Invalid API key", AlertType.ERROR)
                         Log.d(
                             "Meow",
                             "Code: ${result.code} myAPIKey on Fail key:${myAPIKey.getAPIKey()}"
@@ -129,6 +145,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                     // May or may not affect return length - just setting maximum
                     // return length may be affected when we set temperature
                     maxTokens = Integer.parseInt(parent.getItemAtPosition(position).toString())
+                    mySharedPreference.saveMaxTokens(maxTokens)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -146,6 +163,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                     // May or may not affect return length - just setting AI creative freedom
                     // higher value gives more leeway
                     temperature = parent.getItemAtPosition(position).toString().toDouble()
+                    mySharedPreference.saveTemperature(temperature)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -209,5 +227,16 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
 
     override fun releaseButton() {
         binding.summarizeButton.isClickable = true
+    }
+
+    private fun hideTheKeyBoard() {
+        inputMethodManager.hideSoftInputFromWindow(binding.root.windowToken, 0)
+    }
+
+    private fun showAlert(message: String, type: AlertType) {
+        Snackbar.make(binding.summaryText, message, 5000)
+            .setBackgroundTint(getColor(type.bgColor))
+            .setTextColor(getColor(type.fgColor)).show()
+        hideTheKeyBoard()
     }
 }

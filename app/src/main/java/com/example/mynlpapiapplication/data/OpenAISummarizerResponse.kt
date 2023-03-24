@@ -9,10 +9,12 @@ data class OpenAISummarizerResponse(
     val error: Error?,
     @SerializedName("usage")
     val usage : Usage?,
-    var code : Int = 0,
+    var responseTime : Long,
+    var sendTime : Long,
+    var code : Int,
     var success : Boolean
 ) {
-    constructor() : this(null,null,null,0, false)
+    constructor() : this(null,null,null, 0, 0,0, false)
 
     data class Choice(
         @SerializedName("text")

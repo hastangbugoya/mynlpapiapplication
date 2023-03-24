@@ -2,15 +2,17 @@ package com.example.mynlpapiapplication.core
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 
 class MySharedPreference(context: Context) {
-    private val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+    private val masterKeyAlias  = MasterKey.Builder(context)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+        .build()
 
     private val pref = EncryptedSharedPreferences.create(
+        context,
         "my_secure_prefs",
         masterKeyAlias,
-        context,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
@@ -18,6 +20,30 @@ class MySharedPreference(context: Context) {
     fun saveString(key: String, value: String) {
         pref.edit().putString(key, value).apply()
     }
+
+    fun saveLastURL(s : String) {
+        saveString("lastURL", s)
+    }
+
+    fun getLastURL() : String = pref.getString("lastURL", "") ?: ""
+
+    fun saveLastSummary(s : String) {
+        pref.edit().putString("lastResult",s)
+    }
+
+    fun getLastSummary() : String = pref.getString("lastResult","") ?: ""
+
+    fun saveMaxTokens(max : Int) {
+        pref.edit().putInt("maxTokens", max)
+    }
+
+    fun getMaxTokens() : Int = pref.getInt("maxTokens", 50)
+
+    fun saveTemperature(temp : Double) {
+        pref.edit().putFloat("temperature", temp.toFloat())
+    }
+
+    fun getTemperature() : Double = pref.getFloat("temperature", 0.5F).toDouble()
 
     fun getString(key: String): String? {
         return pref.getString(key, null)

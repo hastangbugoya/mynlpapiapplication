@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="url_hint">#512DA8</color>
     <color name="button_bgcolor">#303F9F</color>
+    <color name="alert_color_notify">#388E3C</color>
+    <color name="alert_color_error">#D32F2F</color>
 </resources>

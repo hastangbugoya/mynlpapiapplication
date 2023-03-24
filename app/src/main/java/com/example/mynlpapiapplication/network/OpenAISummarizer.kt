@@ -49,6 +49,8 @@ class OpenAISummarizer(
             uiUpdater?.releaseButton()
             gson.fromJson(responseBody, OpenAISummarizerResponse::class.java).apply {
                 code = response.code
+                sendTime = response.sentRequestAtMillis
+                responseTime = response.receivedResponseAtMillis
                 success = response.isSuccessful
             }
         }
