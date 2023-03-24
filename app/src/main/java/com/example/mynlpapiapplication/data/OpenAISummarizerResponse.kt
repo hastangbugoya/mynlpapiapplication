@@ -12,6 +12,8 @@ data class OpenAISummarizerResponse(
     var code : Int = 0,
     var success : Boolean
 ) {
+    constructor() : this(null,null,null,0, false)
+
     data class Choice(
         @SerializedName("text")
         val text: String,

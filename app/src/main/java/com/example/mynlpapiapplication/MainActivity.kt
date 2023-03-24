@@ -9,9 +9,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.mynlpapiapplication.core.APIKey
 import com.example.mynlpapiapplication.core.MySharedPreference
+import com.example.mynlpapiapplication.data.OpenAISummarizerResponse
 import com.example.mynlpapiapplication.databinding.ActivityMainBinding
 import com.example.mynlpapiapplication.network.OpenAISummarizer
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +23,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     private var maxTokens: Int = 50
     private var temperature: Double = 0.5
+
     private val myAPIKey: APIKey by lazy {
         APIKey(mySharedPreference)
     }
@@ -33,7 +36,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     }
 
     private val openAISummarizer = OpenAISummarizer()
-    private val loadSize = arrayOf<String>("50", "100", "150", "200")
+    private val maxTokenCount = arrayOf<String>("50", "100", "200")
 
     private val temperatureArray = Array<String>(10) {
         "%.1f".format((it + 1) / 10.0)
@@ -52,7 +55,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         binding.maxTokensSpinner.adapter = ArrayAdapter(
             this,
             R.layout.shrink_spinner_item,
-            loadSize
+            maxTokenCount
         )
             .apply {
                 setDropDownViewResource(
@@ -77,9 +80,10 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                 askForAPIKey()
             }
             if (!myAPIKey.isNullorEmpty() && !binding.url.text.isNullOrEmpty()) {
+                binding.loadingImage.visibility = View.VISIBLE
                 CoroutineScope(Dispatchers.Main).launch {
-                    binding.loadingImage.visibility = View.VISIBLE
-                    val result =
+
+                    val result = try {
                         openAISummarizer.summarizeUrl(
                             this@MainActivity,
                             myAPIKey.getAPIKey()!!,
@@ -88,6 +92,10 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                             temperature,
                             Dispatchers.IO
                         )
+                    } catch (e: Exception) {
+                        Toast.makeText(this@MainActivity,"something went wrong",Toast.LENGTH_SHORT).show()
+                        OpenAISummarizerResponse()
+                    }
                     binding.loadingImage.visibility = View.GONE
                     binding.summaryText.text =
                         result.choices?.get(0)?.text ?: result.error?.toString()
@@ -148,11 +156,11 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
 
-        outState.putString("url",binding.url.text.toString())
-        outState.putString("prompt_token",binding.promptTokensLabel.text.toString())
-        outState.putString("completion_tokens",binding.completionTokens.text.toString())
-        outState.putString("total_tokens",binding.totalTokens.text.toString())
-        outState.putString("summary",binding.summaryText.text.toString())
+        outState.putString("url", binding.url.text.toString())
+        outState.putString("prompt_token", binding.promptTokensLabel.text.toString())
+        outState.putString("completion_tokens", binding.completionTokens.text.toString())
+        outState.putString("total_tokens", binding.totalTokens.text.toString())
+        outState.putString("summary", binding.summaryText.text.toString())
         outState.putInt("max_tokens", maxTokens)
         outState.putDouble("temperature", temperature)
         super.onSaveInstanceState(outState, outPersistentState)
@@ -167,9 +175,15 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         binding.completionTokens.setText(savedInstanceState?.getString("completion_tokens"))
         binding.totalTokens.setText(savedInstanceState?.getString("summary"))
         maxTokens = savedInstanceState?.getInt("max_tokens") ?: 50
-        binding.maxTokensSpinner.setSelection((maxTokens/50) - 1)
+        binding.maxTokensSpinner.setSelection((maxTokenCount.indexOf(maxTokens.toString())))
         temperature = savedInstanceState?.getDouble("temperature") ?: 0.5
-        binding.temperatureSpinner.setSelection((temperature * 10).toInt() - 1)
+        val tempIndex = temperatureArray.indexOf("%.1f".format(temperature))
+        binding.temperatureSpinner.setSelection(
+            if (tempIndex > 0)
+                tempIndex
+            else
+                temperatureArray.size / 2 - 1
+        )
         super.onRestoreInstanceState(savedInstanceState, persistentState)
     }
 
