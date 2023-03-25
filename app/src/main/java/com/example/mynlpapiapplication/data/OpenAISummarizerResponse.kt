@@ -21,6 +21,8 @@ data class OpenAISummarizerResponse(
     @SerializedName("usage")
     var usage: Usage? = null,
     var requestString: String?,
+    var temperature: Double,
+    var maxTokens: Int,
     var responseTime: Long,
     var sendTime: Long,
     var code: Int,
@@ -35,6 +37,8 @@ data class OpenAISummarizerResponse(
         null,
         null,
         null,
+        0.5,
+        50,
         0,
         0,
         0,

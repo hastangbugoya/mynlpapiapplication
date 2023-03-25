@@ -56,6 +56,8 @@ class OpenAISummarizer(
                     responseTime = response.receivedResponseAtMillis
                     success = response.isSuccessful
                     requestString = urlString
+                    this.maxTokens = maxTokens
+                    this.temperature = temperature
                 }
             } catch (e: Exception) {
                 Log.d(

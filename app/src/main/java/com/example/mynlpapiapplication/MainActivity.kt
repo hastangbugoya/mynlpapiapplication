@@ -120,14 +120,6 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                         myResponseRecyclerAdapter.addToList(result)
                     }
                     binding.loadingImage.visibility = View.GONE
-                    binding.summaryText.text =
-                        (result.choices?.get(0)?.responseText ?: result.error?.toString()
-                        ?: getString(R.string.unknown_error)).trim()
-                    result.usage?.let {
-                        binding.promtTokens.text = it.prompt_tokens.toString()
-                        binding.completionTokens.text = it.completion_tokens.toString()
-                        binding.totalTokens.text = it.total_tokens.toString()
-                    }
                     showAlert(
                         "Turnaround time: ${result.responseTime - result.sendTime}ms",
                         AlertType.DEFAULT
@@ -213,7 +205,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
     }
 
     private fun showAlert(message: String, type: AlertType) {
-        Snackbar.make(binding.summaryText, message, 5000)
+        Snackbar.make(binding.responseRecycler, message, 5000)
             .setBackgroundTint(getColor(type.bgColor))
             .setTextColor(getColor(type.fgColor)).show()
         hideTheKeyBoard()

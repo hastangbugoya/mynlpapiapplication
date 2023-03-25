@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7158027cdb85d17208f3ca2f425abd9e",
+    "identityHash": "e667f87966dab952a2be05341516a733",
     "entities": [
       {
         "tableName": "openai_summarizer_response",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT, `choices` TEXT, `error` TEXT, `usage` TEXT, `requestString` TEXT, `responseTime` INTEGER NOT NULL, `sendTime` INTEGER NOT NULL, `code` INTEGER NOT NULL, `success` INTEGER NOT NULL, `markedForDelete` INTEGER NOT NULL, `responseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT, `choices` TEXT, `error` TEXT, `usage` TEXT, `requestString` TEXT, `temperature` REAL NOT NULL, `maxTokens` INTEGER NOT NULL, `responseTime` INTEGER NOT NULL, `sendTime` INTEGER NOT NULL, `code` INTEGER NOT NULL, `success` INTEGER NOT NULL, `markedForDelete` INTEGER NOT NULL, `responseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -37,6 +37,18 @@
             "columnName": "requestString",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "temperature",
+            "columnName": "temperature",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxTokens",
+            "columnName": "maxTokens",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "responseTime",
@@ -88,7 +100,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7158027cdb85d17208f3ca2f425abd9e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e667f87966dab952a2be05341516a733')"
     ]
   }
 }
