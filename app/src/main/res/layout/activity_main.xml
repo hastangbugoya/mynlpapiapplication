@@ -80,18 +80,6 @@
         android:layout_marginTop="-5dp"
         android:padding="4dp"
         android:text="Temperature"/>
-<!--    <TextView-->
-<!--        android:id="@+id/summary_text"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/max_tokens_label"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/response_recycler"-->
-<!--        android:textSize="16sp"-->
-<!--        android:layout_margin="4dp"-->
-<!--        tools:text="Response displayed here"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:padding="4dp"-->
-<!--        android:background="#0F7DB300"/>-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/response_recycler"
         android:layout_width="match_parent"
@@ -101,81 +89,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="0dp"
         tools:listitem="@layout/response_item"/>
-<!--    <TextView-->
-<!--        android:id="@+id/promt_tokens"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:background="@drawable/tokens_background"-->
-<!--        tools:text="000"-->
-<!--        android:layout_margin="4dp"-->
-<!--        android:padding="4dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toLeftOf="@id/completion_tokens"/>-->
-<!--    <TextView-->
-<!--        android:id="@+id/completion_tokens"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:background="@drawable/tokens_background"-->
-<!--        tools:text="000"-->
-<!--        android:layout_margin="4dp"-->
-<!--        android:padding="4dp"-->
-<!--        app:layout_constraintTop_toTopOf="@id/promt_tokens"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/promt_tokens"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/promt_tokens"-->
-<!--        app:layout_constraintRight_toLeftOf="@id/total_tokens" />-->
-<!--    <TextView-->
-<!--        android:id="@+id/total_tokens"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:background="@drawable/tokens_background"-->
-<!--        tools:text="000"-->
-<!--        android:layout_margin="4dp"-->
-<!--        android:padding="4dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/promt_tokens"-->
-<!--        app:layout_constraintTop_toTopOf="@id/promt_tokens"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/completion_tokens"-->
-<!--        app:layout_constraintRight_toRightOf="parent"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/prompt_tokens_label"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintLeft_toLeftOf="@id/promt_tokens"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/promt_tokens"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="10sp"-->
-<!--        android:layout_marginBottom="-5dp"-->
-<!--        android:padding="4dp"-->
-<!--        android:text="Prompt Tokens Used"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/completion_tokens_label"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintLeft_toLeftOf="@id/completion_tokens"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/completion_tokens"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="10sp"-->
-<!--        android:layout_marginBottom="-5dp"-->
-<!--        android:padding="4dp"-->
-<!--        android:text="Completion Tokens Used"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/total_tokens_label"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintLeft_toLeftOf="@id/total_tokens"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/total_tokens"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="10sp"-->
-<!--        android:layout_marginBottom="-5dp"-->
-<!--        android:padding="4dp"-->
-<!--        android:text="Total Tokens Used"/>-->
-
     <ImageView
         android:id="@+id/loading_image"
         android:layout_width="wrap_content"

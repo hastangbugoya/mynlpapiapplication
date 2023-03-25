@@ -28,18 +28,20 @@ class ResponseRecyclerAdapter(private var context: Context) :
 
     override fun onBindViewHolder(holder: ResponseItemViewHolder, position: Int) {
         holder.binding.apply {
+            val response = responseList[position]
             this.urlText.text =
                 context.resources.getString(R.string.response_item_url_title).format(
-                    responseList[position].requestString?.trim(),
-                    responseList[position].maxTokens,
-                    responseList[position].temperature
+                    response.requestString?.trim(),
+                    response.maxTokens,
+                    response.temperature
                 )
-            responseList[position].usage?.let {
+            this.turnaroundText.text = context.getString(R.string.request_turnaround).format(response.getSendDateString(),response.getTurnaroundTime())
+            response.usage?.let {
                 this.promtTokens.text = it.prompt_tokens.toString()
                 this.completionTokens.text = it.completion_tokens.toString()
                 this.totalTokens.text = it.total_tokens.toString()
             }
-            responseList[position].choices?.get(0)?.let {
+            response.choices?.get(0)?.let {
                 this.summaryText.text = it.responseText.trim()
             }
             responseList[position].error?.let {

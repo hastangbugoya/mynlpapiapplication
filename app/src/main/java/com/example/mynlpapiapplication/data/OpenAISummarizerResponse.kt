@@ -76,11 +76,9 @@ data class OpenAISummarizerResponse(
         val total_tokens: Int = 0
     )
 
-    fun getSendDateString(): String? = if (sendTime == 0L) {
-        SimpleDateFormat("MM/dd/yy hh:mm:ss.SSS", Locale.getDefault()).format(Date(sendTime))
-    } else {
-        null
-    }
+    fun getTurnaroundTime() : Long = responseTime - sendTime
+
+    fun getSendDateString(): String? = SimpleDateFormat("MM/dd/YYYY hh:mm:ss.SSS", Locale.getDefault()).format(Date(sendTime))
 
 }
 

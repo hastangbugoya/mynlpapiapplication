@@ -18,7 +18,7 @@ class OpenAISummarizer(
     val baseUrl: String = BuildConfig.BASE_URL
 ) {
     private val client = OkHttpClient()
-    var uiUpdater: UIUpdater? = null
+//    var uiUpdater: UIUpdater? = null
     suspend fun summarizeUrl(
         context: Context,
         apiKey: String,
@@ -28,8 +28,6 @@ class OpenAISummarizer(
         runOn: CoroutineDispatcher
     ): OpenAISummarizerResponse {
         return withContext(runOn) {
-            uiUpdater?.lockupButton()
-
             val requestBody = JSONObject()
                 .put("model", "text-davinci-002")
                 .put("prompt", context.resources.getString(R.string.url_prompt).format(urlString))
@@ -46,8 +44,6 @@ class OpenAISummarizer(
 
             val response = client.newCall(request).execute()
             val responseBody = response.body?.string() ?: ""
-
-            uiUpdater?.releaseButton()
 
             try {
                 Gson().fromJson(responseBody, OpenAISummarizerResponse::class.java).apply {
@@ -69,14 +65,5 @@ class OpenAISummarizer(
                 OpenAISummarizerResponse()
             }
         }
-    }
-
-    fun setUIUpdater(updater: UIUpdater) {
-        uiUpdater = updater
-    }
-
-    interface UIUpdater {
-        fun lockupButton()
-        fun releaseButton()
     }
 }

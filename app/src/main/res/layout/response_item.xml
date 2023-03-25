@@ -6,25 +6,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="4dp"
     android:elevation="4dp"
-    android:backgroundTint="@color/white"
-    >
+    app:cardCornerRadius="8dp"
+    android:backgroundTint="@color/white">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
         android:background="@drawable/response_item_background" >
-        <TextView
-            android:id="@+id/url_text"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/url_group"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/summary_text"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:padding="4dp"
-            android:textFontWeight="700"
-            android:textColor="#051370"
-            android:background="@drawable/tokens_background"
-            tools:text="Url here"/>
+            android:background="@drawable/tokens_background">
+            <TextView
+                android:id="@+id/url_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="4dp"
+                android:textFontWeight="700"
+                android:textColor="#051370"
+                tools:text="Url here"/>
+            <TextView
+                android:id="@+id/turnaround_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/url_text"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textSize="10sp"
+                tools:text="turnaround info"
+                android:textColor="@color/black"
+                android:textStyle="italic"
+                android:layout_marginTop="-10dp"
+                android:padding="4dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
             android:id="@+id/summary_text"
             android:layout_width="match_parent"
@@ -34,7 +52,7 @@
             android:textColor="@color/black"
             tools:text="Response text here"
             app:layout_constraintBottom_toTopOf="@id/prompt_tokens_label"
-            app:layout_constraintTop_toBottomOf="@id/url_text" />
+            app:layout_constraintTop_toBottomOf="@id/url_group" />
 
         <TextView
             android:id="@+id/promt_tokens"

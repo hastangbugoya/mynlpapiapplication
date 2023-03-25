@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -24,7 +25,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
+class MainActivity : AppCompatActivity() {
     private var maxTokens: Int = 50
     private var temperature: Double = 0.5
 
@@ -54,6 +55,10 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         MyNLPAPIDatabase.getInstance(this)
     }
 
+    private val myResponseRecyclerAdapter : ResponseRecyclerAdapter by lazy {
+        ResponseRecyclerAdapter(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         myAPIKey.getAPIInfo()
@@ -64,8 +69,7 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         maxTokens = mySharedPreference.getMaxTokens()
         temperature = mySharedPreference.getTemperature()
         setContentView(binding.root)
-        openAISummarizer.setUIUpdater(this)
-        val myResponseRecyclerAdapter = ResponseRecyclerAdapter(this)
+
 
         binding.responseRecycler.adapter = myResponseRecyclerAdapter
 
@@ -93,48 +97,15 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         binding.temperatureSpinner.setSelection(4)
 
         binding.summarizeButton.setOnClickListener {
-            if (myAPIKey.isNullorEmpty()) {
-                askForAPIKey()
-            }
-            if (!myAPIKey.isNullorEmpty() && !binding.url.text.isNullOrEmpty()) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.loadingImage.visibility = View.VISIBLE
-                    val result = try {
-                        openAISummarizer.summarizeUrl(
-                            this@MainActivity,
-                            myAPIKey.getAPIKey()!!,
-                            binding.url.text.toString(),
-                            maxTokens,
-                            temperature,
-                            Dispatchers.IO
-                        )
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "something went wrong: $e",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        OpenAISummarizerResponse()
-                    }
-                    result.choices?.let {
-                        myResponseRecyclerAdapter.addToList(result)
-                    }
-                    binding.loadingImage.visibility = View.GONE
-                    showAlert(
-                        "Turnaround time: ${result.responseTime - result.sendTime}ms",
-                        AlertType.DEFAULT
-                    )
-                    if (result.code == 401) {
-                        myAPIKey.resetKey()
-                        myAPIKey.saveAPIInfo()
-                        showAlert("Invalid API key", AlertType.ERROR)
-                        Log.d(
-                            "Meow",
-                            "Code: ${result.code} myAPIKey on Fail key:${myAPIKey.getAPIKey()}"
-                        )
-                        askForAPIKey()
-                    }
-                }
+            summarize()
+        }
+
+        binding.url.setOnEditorActionListener {  _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                summarize()
+                true
+            } else {
+                false
             }
         }
 
@@ -175,6 +146,52 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                 }
             }
     }
+    private fun summarize() : Int {
+        if (myAPIKey.isNullorEmpty()) {
+            askForAPIKey()
+        }
+        if (!myAPIKey.isNullorEmpty() && !binding.url.text.isNullOrEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                binding.loadingImage.visibility = View.VISIBLE
+                val result = try {
+                    openAISummarizer.summarizeUrl(
+                        this@MainActivity,
+                        myAPIKey.getAPIKey()!!,
+                        binding.url.text.toString(),
+                        maxTokens,
+                        temperature,
+                        Dispatchers.IO
+                    )
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "something went wrong: $e",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    OpenAISummarizerResponse()
+                }
+                result.choices?.let {
+                    myResponseRecyclerAdapter.addToList(result)
+                }
+                binding.loadingImage.visibility = View.GONE
+                showAlert(
+                    "Turnaround time: ${result.responseTime - result.sendTime}ms",
+                    AlertType.DEFAULT
+                )
+                if (result.code == 401) {
+                    myAPIKey.resetKey()
+                    myAPIKey.saveAPIInfo()
+                    showAlert("Invalid API key", AlertType.ERROR)
+                    Log.d(
+                        "Meow",
+                        "Code: ${result.code} myAPIKey on Fail key:${myAPIKey.getAPIKey()}"
+                    )
+                    askForAPIKey()
+                }
+            }
+        }
+        return 0
+    }
 
     private fun askForAPIKey() {
         val editText = EditText(this)
@@ -192,11 +209,11 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
             .create().show()
     }
 
-    override fun lockupButton() {
+    fun lockupButton() {
         binding.summarizeButton.isClickable = false
     }
 
-    override fun releaseButton() {
+    fun releaseButton() {
         binding.summarizeButton.isClickable = true
     }
 
