@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="url_prompt">このウェブページの内容の要約を教えてください: %1$s</string>
+    <string name="unknown_error">不明なエラー</string>
+    <string name="enter_apikey_prompt">OpenAI API キーを入力してください</string>
+    <string name="ok">わかった</string>
+    <string name="cancel">キャンセル</string>
+</resources>

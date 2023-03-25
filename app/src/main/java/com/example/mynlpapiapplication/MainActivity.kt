@@ -11,9 +11,11 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import com.example.mynlpapiapplication.adapter.ResponseRecyclerAdapter
 import com.example.mynlpapiapplication.core.APIKey
 import com.example.mynlpapiapplication.core.MySharedPreference
 import com.example.mynlpapiapplication.data.AlertType
+import com.example.mynlpapiapplication.data.MyNLPAPIDatabase
 import com.example.mynlpapiapplication.data.OpenAISummarizerResponse
 import com.example.mynlpapiapplication.databinding.ActivityMainBinding
 import com.example.mynlpapiapplication.network.OpenAISummarizer
@@ -48,6 +50,10 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         "%.1f".format((it + 1) / 10.0)
     }
 
+    private val myDb: MyNLPAPIDatabase by lazy {
+        MyNLPAPIDatabase.getInstance(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         myAPIKey.getAPIInfo()
@@ -59,6 +65,9 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
         temperature = mySharedPreference.getTemperature()
         setContentView(binding.root)
         openAISummarizer.setUIUpdater(this)
+        val myResponseRecyclerAdapter = ResponseRecyclerAdapter(this)
+
+        binding.responseRecycler.adapter = myResponseRecyclerAdapter
 
         binding.maxTokensSpinner.adapter = ArrayAdapter(
             this,
@@ -102,15 +111,18 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                     } catch (e: Exception) {
                         Toast.makeText(
                             this@MainActivity,
-                            "something went wrong",
+                            "something went wrong: $e",
                             Toast.LENGTH_SHORT
                         ).show()
                         OpenAISummarizerResponse()
                     }
+                    result.choices?.let {
+                        myResponseRecyclerAdapter.addToList(result)
+                    }
                     binding.loadingImage.visibility = View.GONE
                     binding.summaryText.text =
-                        result.choices?.get(0)?.text ?: result.error?.toString()
-                                ?: getString(R.string.unknown_error)
+                        (result.choices?.get(0)?.responseText ?: result.error?.toString()
+                        ?: getString(R.string.unknown_error)).trim()
                     result.usage?.let {
                         binding.promtTokens.text = it.prompt_tokens.toString()
                         binding.completionTokens.text = it.completion_tokens.toString()
@@ -170,39 +182,6 @@ class MainActivity : AppCompatActivity(), OpenAISummarizer.UIUpdater {
                     TODO("Something")
                 }
             }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-
-        outState.putString("url", binding.url.text.toString())
-        outState.putString("prompt_token", binding.promptTokensLabel.text.toString())
-        outState.putString("completion_tokens", binding.completionTokens.text.toString())
-        outState.putString("total_tokens", binding.totalTokens.text.toString())
-        outState.putString("summary", binding.summaryText.text.toString())
-        outState.putInt("max_tokens", maxTokens)
-        outState.putDouble("temperature", temperature)
-        super.onSaveInstanceState(outState, outPersistentState)
-    }
-
-    override fun onRestoreInstanceState(
-        savedInstanceState: Bundle?,
-        persistentState: PersistableBundle?
-    ) {
-        binding.url.setText(savedInstanceState?.getString("url"))
-        binding.promtTokens.setText(savedInstanceState?.getString("prompt_tokens"))
-        binding.completionTokens.setText(savedInstanceState?.getString("completion_tokens"))
-        binding.totalTokens.setText(savedInstanceState?.getString("summary"))
-        maxTokens = savedInstanceState?.getInt("max_tokens") ?: 50
-        binding.maxTokensSpinner.setSelection((maxTokenCount.indexOf(maxTokens.toString())))
-        temperature = savedInstanceState?.getDouble("temperature") ?: 0.5
-        val tempIndex = temperatureArray.indexOf("%.1f".format(temperature))
-        binding.temperatureSpinner.setSelection(
-            if (tempIndex > 0)
-                tempIndex
-            else
-                temperatureArray.size / 2 - 1
-        )
-        super.onRestoreInstanceState(savedInstanceState, persistentState)
     }
 
     private fun askForAPIKey() {

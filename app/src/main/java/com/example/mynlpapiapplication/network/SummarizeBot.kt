@@ -23,18 +23,17 @@ class SummarizeBot(private val apiKey: String) {
 
     suspend fun summarize(text: String): String {
         val requestBody = "{\"url\":\"$text\",\"size\":20}"
-        var s = ""
-//        val call = service.summarize(apiKey, requestBody)
-        try {
-                s = withTimeoutOrNull(4000L) {
+        return try {
+                withTimeoutOrNull(4000L) {
                     withContext(Dispatchers.IO) {
                         service.summarize(apiKey, requestBody).summary
                     }
-                } ?: "Timed out"
-        } catch (e: Exception) {
-            s = e.toString()
+                }.toString()
+        } catch (e: TimeoutCancellationException) {
+            "Timed out"
+        }catch (e: Exception) {
+            e.toString()
         }
-        return s
     }
 
     private interface SummarizeBotService {
