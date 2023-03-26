@@ -2,7 +2,14 @@
 <resources>
     <string name="url_prompt">このウェブページの内容の要約を教えてください: %1$s</string>
     <string name="unknown_error">不明なエラー</string>
+    <string name="summarize_button">要約する</string>
     <string name="enter_apikey_prompt">OpenAI API キーを入力してください</string>
     <string name="ok">わかった</string>
     <string name="cancel">キャンセル</string>
+    <string name="max_tokens_label">最大トークン</string>
+    <string name="temperature_label">温度</string>
+    <string name="enter_url_here">ここに URL を入力</string>
+    <string name="prompt_tokens_used">使用されるプロンプト トークン</string>
+    <string name="completion_tokens_used">使用された完了トークン</string>
+    <string name="total_tokens_used">使用されたトークンの合計</string>
 </resources>

@@ -2,7 +2,14 @@
 <resources>
     <string name="url_prompt">Donnez-moi le résumé du contenu de cette page web : %1$s</string>
     <string name="unknown_error">Erreur inconnue</string>
+    <string name="summarize_button">Résumer</string>
     <string name="enter_apikey_prompt">Entrez votre clé API OpenAI</string>
     <string name="ok">OK</string>
     <string name="cancel">Annuler</string>
+    <string name="max_tokens_label">Jetons maximum</string>
+    <string name="temperature_label">Température</string>
+    <string name="enter_url_here">Entrez l\'URL ici</string>
+    <string name="prompt_tokens_used">Jetons d\'invite utilisés</string>
+    <string name="completion_tokens_used">Jetons d\'achèvement utilisés</string>
+    <string name="total_tokens_used">Total des jetons utilisés</string>
 </resources>

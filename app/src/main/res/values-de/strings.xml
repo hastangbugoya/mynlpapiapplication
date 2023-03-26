@@ -2,7 +2,14 @@
 <resources>
     <string name="url_prompt">Bitte geben Sie eine Zusammenfassung des Inhalts dieser Webseite ein: %1$s</string>
     <string name="unknown_error">Unbekannter Fehler</string>
+    <string name="summarize_button">Zusammenfassen</string>
     <string name="enter_apikey_prompt">Geben Sie bitte Ihren OpenAI API-Schlüssel ein</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
+    <string name="max_tokens_label">Maximale Token</string>
+    <string name="temperature_label">Temperatur</string>
+    <string name="enter_url_here">URL hier eingeben</string>
+    <string name="prompt_tokens_used">Verwendete Aufforderungstoken</string>
+    <string name="completion_tokens_used">Verwendete Abschlusstoken</string>
+    <string name="total_tokens_used">Insgesamt verwendete Token</string>
 </resources>

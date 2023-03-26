@@ -48,7 +48,7 @@ class ResponseRecyclerAdapter(private var context: Context) :
                         )
                     this.turnaroundText.text = context.getString(R.string.request_turnaround).format(response.getSendDateString(),response.getTurnaroundTime())
                     response.usage?.let {
-                        this.promtTokens.text = it.prompt_tokens.toString()
+                        this.promptTokens.text = it.prompt_tokens.toString()
                         this.completionTokens.text = it.completion_tokens.toString()
                         this.totalTokens.text = it.total_tokens.toString()
                     }
@@ -71,7 +71,7 @@ class ResponseRecyclerAdapter(private var context: Context) :
                         )
                     this.turnaroundText.text = context.getString(R.string.request_turnaround).format(response.getSendDateString(),response.getTurnaroundTime())
                     response.usage?.let {
-                        this.promtTokens.text = it.prompt_tokens.toString()
+                        this.promptTokens.text = it.prompt_tokens.toString()
                         this.completionTokens.text = it.completion_tokens.toString()
                         this.totalTokens.text = it.total_tokens.toString()
                     }
