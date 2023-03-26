@@ -82,7 +82,6 @@ class ResponseRecyclerAdapter(private var context: Context) :
                         this.summaryText.text = it.toString()
                     }
                 }
-
             }
         }
     }

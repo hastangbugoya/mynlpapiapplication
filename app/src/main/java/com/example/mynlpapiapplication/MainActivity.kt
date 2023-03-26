@@ -44,7 +44,10 @@ class MainActivity : AppCompatActivity() {
         ActivityMainBinding.inflate(LayoutInflater.from(this))
     }
 
-    private val openAISummarizer = OpenAISummarizer()
+    private val openAISummarizer : OpenAISummarizer by lazy {
+        OpenAISummarizer(BuildConfig.BASE_URL, myAPIKey, this)
+    }
+
     private val maxTokenCount = arrayOf<String>("50", "100", "200")
 
     private val temperatureArray = Array<String>(10) {
@@ -146,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
-    private fun summarize() : Int {
+    private fun summarize() {
         if (myAPIKey.isNullorEmpty()) {
             askForAPIKey()
         }
@@ -155,8 +158,6 @@ class MainActivity : AppCompatActivity() {
                 binding.loadingImage.visibility = View.VISIBLE
                 val result = try {
                     openAISummarizer.summarizeUrl(
-                        this@MainActivity,
-                        myAPIKey.getAPIKey()!!,
                         binding.url.text.toString(),
                         maxTokens,
                         temperature,
@@ -190,7 +191,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return 0
     }
 
     private fun askForAPIKey() {

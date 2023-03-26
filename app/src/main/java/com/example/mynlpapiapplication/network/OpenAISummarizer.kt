@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.mynlpapiapplication.BuildConfig
 import com.example.mynlpapiapplication.R
+import com.example.mynlpapiapplication.core.APIKey
 import com.example.mynlpapiapplication.data.OpenAISummarizerResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -13,15 +14,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import java.io.IOException
 
 class OpenAISummarizer(
-    val baseUrl: String = BuildConfig.BASE_URL
+    val baseUrl: String = BuildConfig.BASE_URL,
+    val myAPIKey : APIKey,
+    val context: Context
 ) {
     private val client = OkHttpClient()
-//    var uiUpdater: UIUpdater? = null
     suspend fun summarizeUrl(
-        context: Context,
-        apiKey: String,
         urlString: String,
         maxTokens: Int,
         temperature: Double,
@@ -38,12 +39,12 @@ class OpenAISummarizer(
 
             val request = Request.Builder()
                 .url("${baseUrl}completions")
-                .header("Authorization", "Bearer $apiKey")
+                .header("Authorization", "Bearer ${myAPIKey.getAPIKey() ?: "unknown-key"}")
                 .post(requestBody)
                 .build()
 
             val response = client.newCall(request).execute()
-            val responseBody = response.body?.string() ?: ""
+            val responseBody = response.body?.string()
 
             try {
                 Gson().fromJson(responseBody, OpenAISummarizerResponse::class.java).apply {
@@ -58,11 +59,13 @@ class OpenAISummarizer(
             } catch (e: Exception) {
                 Log.d(
                     "Meow", when (e) {
-                        is JsonSyntaxException -> "JSON syntax ${e.toString()}"
-                        else -> e.toString()
+                        is JsonSyntaxException -> "JSON syntax: $e"
+                        is IOException -> "Unable to connect: $e"
+                        else -> "Unknown exception: $e"
                     }
                 )
-                OpenAISummarizerResponse()
+                OpenAISummarizerResponse().apply {
+                }
             }
         }
     }

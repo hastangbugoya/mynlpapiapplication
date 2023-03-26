@@ -23,10 +23,10 @@ class APIKey(
     }
 
     fun getAPIInfo() {
-        key = myInfo?.getString("myKey")
+        key = myInfo?.getString("myOpenAIKey")
     }
 
     fun saveAPIInfo() {
-        myInfo?.saveString("myKey", key ?: "")
+        myInfo?.saveString("myOpenAIKey", key ?: "")
     }
 }
