@@ -76,82 +76,83 @@ data class OpenAISummarizerResponse(
         val total_tokens: Int = 0
     )
 
-    fun getTurnaroundTime() : Long = responseTime - sendTime
+    fun getTurnaroundTime(): Long = responseTime - sendTime
 
-    fun getSendDateString(): String? = SimpleDateFormat("MM/dd/YYYY hh:mm:ss.SSS", Locale.getDefault()).format(Date(sendTime))
+    fun getSendDateString(): String? =
+        SimpleDateFormat("MM/dd/YYYY hh:mm:ss.SSS", Locale.getDefault()).format(Date(sendTime))
+
+    fun putInfo(
+        urlString: String,
+        maxTokens: Int,
+        temperature: Double,
+        code: Int,
+        sentRequestAtMillis: Long,
+        receivedResponseAtMillis: Long,
+        isSuccessful: Boolean
+    ): OpenAISummarizerResponse {
+        requestString = urlString
+        this.maxTokens = maxTokens
+        this.temperature = temperature
+        this.code = code
+        this.sendTime = sentRequestAtMillis
+        this.responseTime = receivedResponseAtMillis
+        this.success = isSuccessful
+        return this
+    }
 
 }
 
 class OpenAISummarizerResponseConverters {
     @TypeConverter
-    fun fromChoiceList(choiceList: List<OpenAISummarizerResponse.Choice>): String {
-        val gson = Gson()
-        return gson.toJson(choiceList)
-    }
+    fun fromChoiceList(choiceList: List<OpenAISummarizerResponse.Choice>): String =
+        Gson().toJson(choiceList)
 
     @TypeConverter
-    fun toChoiceList(choiceListString: String): List<OpenAISummarizerResponse.Choice>? {
-        if (choiceListString.isNullOrEmpty()) {
-            return null
+    fun toChoiceList(choiceListString: String): List<OpenAISummarizerResponse.Choice>? =
+        if (choiceListString.isEmpty()) {
+            null
+        } else {
+            Gson().fromJson(
+                choiceListString,
+                object : TypeToken<List<OpenAISummarizerResponse.Choice>>() {}.type
+            )
         }
-        val gson = Gson()
-        return gson.fromJson(
-            choiceListString,
-            object : TypeToken<List<OpenAISummarizerResponse.Choice>>() {}.type
-        )
-    }
 
     @TypeConverter
-    fun fromError(error: OpenAISummarizerResponse.Error): String {
-        val gson = Gson()
-        return gson.toJson(error)
-    }
+    fun fromError(error: OpenAISummarizerResponse.Error): String = Gson().toJson(error)
 
     @TypeConverter
-    fun toError(error: String): OpenAISummarizerResponse.Error? {
-        if (error.isNullOrEmpty()) {
-            return null
-        }
-        val gson = Gson()
-        return gson.fromJson(
+    fun toError(error: String): OpenAISummarizerResponse.Error? = if (error.isEmpty()) {
+        null
+    } else {
+        Gson().fromJson(
             error,
             object : TypeToken<List<OpenAISummarizerResponse.Choice>>() {}.type
         )
     }
 
     @TypeConverter
-    fun fromUsage(usage: OpenAISummarizerResponse.Usage): String {
-        val gson = Gson()
-        return gson.toJson(usage)
-    }
+    fun fromUsage(usage: OpenAISummarizerResponse.Usage): String = Gson().toJson(usage)
 
     @TypeConverter
-    fun toUsage(usage: String): OpenAISummarizerResponse.Usage? {
-        if (usage.isNullOrEmpty()) {
-            return null
-        }
-        val gson = Gson()
-        return gson.fromJson(
+    fun toUsage(usage: String): OpenAISummarizerResponse.Usage? = if (usage.isEmpty()) {
+        null
+    } else {
+        Gson().fromJson(
             usage,
-            object : TypeToken<List<OpenAISummarizerResponse.Usage>>() {}.type
+            OpenAISummarizerResponse.Usage::class.java
         )
     }
 
     @TypeConverter
-    fun fromChoice(usage: OpenAISummarizerResponse.Choice): String {
-        val gson = Gson()
-        return gson.toJson(usage)
-    }
+    fun fromChoice(usage: OpenAISummarizerResponse.Choice): String = Gson().toJson(usage)
 
     @TypeConverter
-    fun toChoice(usage: String): OpenAISummarizerResponse.Choice {
-        val gson = Gson()
-        return gson.fromJson(usage, object : TypeToken<OpenAISummarizerResponse.Choice>() {}.type)
-    }
+    fun toChoice(usage: String): OpenAISummarizerResponse.Choice =
+        Gson().fromJson(usage, OpenAISummarizerResponse.Choice::class.java)
 
     @TypeConverter
     fun toTrimmedString(original: String): String {
         return original.trim()
     }
-
 }

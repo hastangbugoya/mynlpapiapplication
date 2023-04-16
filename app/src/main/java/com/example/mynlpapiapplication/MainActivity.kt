@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         APIKey(mySharedPreference)
     }
     private val mySharedPreference: MySharedPreference by lazy {
-        MySharedPreference(this)
+        MySharedPreference(applicationContext)
     }
 
     private val binding: ActivityMainBinding by lazy {
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val openAISummarizer : OpenAISummarizer by lazy {
-        OpenAISummarizer(BuildConfig.BASE_URL, myAPIKey, this)
+        OpenAISummarizer(BuildConfig.BASE_URL, myAPIKey, applicationContext)
     }
 
     private val maxTokenCount = arrayOf<String>("50", "100", "200")
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val myDb: MyNLPAPIDatabase by lazy {
-        MyNLPAPIDatabase.getInstance(this)
+        MyNLPAPIDatabase.getInstance(applicationContext)
     }
 
     private val myResponseRecyclerAdapter : ResponseRecyclerAdapter by lazy {
@@ -65,10 +65,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         myAPIKey.getAPIInfo()
-        if (BuildConfig.DEBUG) {
-            myAPIKey.setAPIKey(BuildConfig.API_KEY)
-            myAPIKey.saveAPIInfo()
-        }
+//        if (BuildConfig.DEBUG) {
+//            myAPIKey.setAPIKey(BuildConfig.API_KEY)
+//            myAPIKey.saveAPIInfo()
+//        }
         maxTokens = mySharedPreference.getMaxTokens()
         temperature = mySharedPreference.getTemperature()
         setContentView(binding.root)
@@ -202,7 +202,7 @@ class MainActivity : AppCompatActivity() {
                 val inputString = editText.text.toString()
                 if (inputString.isNotEmpty()) {
                     myAPIKey.setAPIKey(inputString)
-                    myAPIKey.saveAPIInfo()
+                    mySharedPreference.saveAPIKey(inputString)
                 }
             }
             .setNegativeButton(getString(R.string.cancel), null)

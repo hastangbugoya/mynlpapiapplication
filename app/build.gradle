@@ -28,7 +28,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_KEY", "\"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\""
+            buildConfigField "String", "API_KEY", "\"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\""
         }
         release {
             minifyEnabled false
@@ -80,10 +80,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    // room
-    implementation "androidx.room:room-ktx:$room_version"
-
-    // test helpers
+     // test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
 }

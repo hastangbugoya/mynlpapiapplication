@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="url_prompt">Dame el resumen del contenido de esta página web: %1$s</string>
+    <string name="translate_prompt">Traduce este texto : </string>
     <string name="unknown_error">Error desconocido</string>
     <string name="summarize_button">Resumir</string>
     <string name="enter_apikey_prompt">Ingrese su clave API de OpenAI</string>
@@ -8,7 +9,7 @@
     <string name="cancel">Cancelar</string>
     <string name="max_tokens_label">Fichas máximas</string>
     <string name="temperature_label">Temperatura</string>
-    <string name="enter_url_here">Introduzca la URL aquí</string>
+    <string name="user_prompt">Hola</string>
     <string name="prompt_tokens_used">Fichas de solicitud utilizadas</string>
     <string name="completion_tokens_used">Fichas de finalización utilizadas</string>
     <string name="total_tokens_used">Fichas totales utilizadas</string>

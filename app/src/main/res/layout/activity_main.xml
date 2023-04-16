@@ -19,7 +19,7 @@
         android:background="@drawable/main_activity_url_background"
         android:padding="12dp"
         android:layout_margin="4dp"
-        android:hint="@string/enter_url_here" />
+        android:hint="@string/user_prompt" />
     <Spinner
         android:id="@+id/max_tokens_spinner"
         android:layout_width="0dp"

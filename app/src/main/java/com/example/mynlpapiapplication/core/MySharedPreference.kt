@@ -1,6 +1,7 @@
 package com.example.mynlpapiapplication.core
 
 import android.content.Context
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
@@ -18,7 +19,12 @@ class MySharedPreference(context: Context) {
     )
 
     fun saveString(key: String, value: String) {
+        Log.d("Meow", ">> $key - $value")
         pref.edit().putString(key, value).apply()
+    }
+
+    fun saveAPIKey(key : String?) {
+        pref.edit().putString("myOpenAIKey", key?.trim() ?: "no key").apply()
     }
 
     fun saveLastURL(s : String) {
@@ -28,19 +34,19 @@ class MySharedPreference(context: Context) {
     fun getLastURL() : String = pref.getString("lastURL", "") ?: ""
 
     fun saveLastSummary(s : String) {
-        pref.edit().putString("lastResult",s)
+        pref.edit().putString("lastResult",s).apply()
     }
 
     fun getLastSummary() : String = pref.getString("lastResult","") ?: ""
 
     fun saveMaxTokens(max : Int) {
-        pref.edit().putInt("maxTokens", max)
+        pref.edit().putInt("maxTokens", max).apply()
     }
 
     fun getMaxTokens() : Int = pref.getInt("maxTokens", 50)
 
     fun saveTemperature(temp : Double) {
-        pref.edit().putFloat("temperature", temp.toFloat())
+        pref.edit().putFloat("temperature", temp.toFloat()).commit()
     }
 
     fun getTemperature() : Double = pref.getFloat("temperature", 0.5F).toDouble()

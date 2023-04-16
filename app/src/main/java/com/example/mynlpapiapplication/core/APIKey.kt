@@ -1,5 +1,7 @@
 package com.example.mynlpapiapplication.core
 
+import android.util.Log
+
 class APIKey(
     private val myInfo: MySharedPreference?,
     private var key: String? = null,
@@ -27,6 +29,6 @@ class APIKey(
     }
 
     fun saveAPIInfo() {
-        myInfo?.saveString("myOpenAIKey", key ?: "")
+        myInfo?.saveAPIKey( key ?: "")
     }
 }
