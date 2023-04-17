@@ -16,4 +16,5 @@ interface MyNLPAPIDatabaseDAO {
     @Query("SELECT * FROM openai_summarizer_response")
     suspend fun getAll() : MutableList<OpenAISummarizerResponse>?
     // Add other methods as needed
+
 }
